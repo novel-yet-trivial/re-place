@@ -35,7 +35,7 @@ def draw():
             y = int(row["y_coordinate"])
             c = int(row["color"])
             place_canvas.itemconfig(pixels[(x,y)], fill=colour_lookup[c])
-            if idx % 1000:
+            if idx % 1000 == 0:
                 root.update()
 
 t = threading.Thread(target=draw)
