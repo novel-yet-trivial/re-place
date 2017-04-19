@@ -1,3 +1,5 @@
+#!/usr/bin/env python3
+
 from csv import DictReader
 from tkinter import *
 import threading
