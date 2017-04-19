@@ -5,8 +5,28 @@ import threading
 1001x1001 because if a pixel is placed at (1000, 1000), due to the create_rectangle
 function, its bottom right corner would be located at (1001, 1001)
 
-http://wiki.tcl.tk/37701
+Data:
+https://www.reddit.com/r/redditdata/comments/6640ru/place_datasets_april_fools_2017/
 """
+
+colour_lookup = {
+    0:"#FFFFFF",
+    1:"#E4E4E4",
+    2:"#888888",
+    3:"#222222",
+    4:"#FFA7D1",
+    5:"#E50000",
+    6:"#E59500",
+    7:"#A06A42",
+    8:"#E5D900",
+    9:"#94E044",
+    10:"#02BE01",
+    11:"#00E5F0",
+    12:"#0083C7",
+    13:"#0000EA",
+    14:"#E04AFF",
+    15:"#820080"
+}
 
 h, w = 1001, 1001
 
@@ -17,14 +37,14 @@ drawing_canvas = Canvas(root, width=w, height=h, highlightbackground="grey")
 drawing_canvas.grid()
 
 def draw():
-    lis = [[25, 25, "blue"], [26, 26, "red"], [27, 27, "green"]]
+    lis = [[25, 25, 9], [26, 26, 10], [27, 27, 5]]
 
     for entry in lis:
         x = entry[0]
         y = entry[1]
-        colour = entry[2]
+        c = entry[2]
 
-        drawing_canvas.create_rectangle(x, y, x+1, y+1, fill=colour,  width=0)
+        drawing_canvas.create_rectangle(x, y, x+1, y+1, fill=colour_lookup[c],  width=0)
 
 t = threading.Thread(target=draw)
 t.daemon = True
