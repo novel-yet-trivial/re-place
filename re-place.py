@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 
 from csv import DictReader
-from tkinter import *
+import tkinter as tk
 import threading
+import lzma
 
 h, w = 1001, 1001
 
@@ -11,15 +12,15 @@ colour_lookup = ["#FFFFFF", "#E4E4E4", "#888888", "#222222", "#FFA7D1",
                  "#02BE01", "#00E5F0", "#0083C7", "#0000EA", "#E04AFF",
                  "#820080"]
 
-root = Tk()
+root = tk.Tk()
 root.title("re-place")
 root.geometry("{}x{}".format(w, h))
-place_canvas = Canvas(root, width=w, height=h, highlightbackground="white")
+place_canvas = tk.Canvas(root, width=w, height=h, highlightbackground="white")
 place_canvas.grid()
 
 def draw():
     print("Opening csv")
-    with open ("sorted_pixels.csv") as csvfile:
+    with lzma.open('sorted_pixels.csv.xz', 'rt') as csvfile:
         print("Open, feeding to DictReader")
         reader = DictReader(csvfile)
         print("Done, Drawing")
