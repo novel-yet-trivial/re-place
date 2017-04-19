@@ -4,25 +4,34 @@ from csv import DictReader
 import tkinter as tk
 import threading
 import lzma
+from PIL import Image, ImageTk
 
 HEIGHT, WIDTH = 1001, 1001
+CHEATER = 10000 # update display every n changed pixels. The higher this number the faster the animation
 
 colour_lookup = ["#FFFFFF", "#E4E4E4", "#888888", "#222222", "#FFA7D1",
                  "#E50000", "#E59500", "#A06A42", "#E5D900", "#94E044",
                  "#02BE01", "#00E5F0", "#0083C7", "#0000EA", "#E04AFF",
                  "#820080"]
 
+colour_lookup = [
+    (255, 255, 255), (228, 228, 228), (136, 136, 136), (34, 34, 34),
+    (255, 167, 209), (229, 0, 0), (229, 149, 0), (160, 106, 66),
+    (229, 217, 0), (148, 224, 68), (2, 190, 1), (0, 229, 240),
+    (0, 131, 199), (0, 0, 234), (224, 74, 255), (130, 0, 128)]
+
 root = tk.Tk()
 root.title("re-place")
 root.geometry("{}x{}".format(WIDTH, HEIGHT))
-place_canvas = tk.Canvas(root, width=WIDTH, height=HEIGHT, highlightbackground="white")
-place_canvas.grid()
 
 print('please wait ... making 1 million pixels')
-pixels = {}
-for x in range(WIDTH):
-    for y in range(HEIGHT):
-        pixels[(x, y)] = place_canvas.create_rectangle(x, y, x+1, y+1, fill=colour_lookup[0],  width=0)
+img = Image.new(mode="RGB", size=(WIDTH, HEIGHT), color=colour_lookup[0])
+
+place_label = tk.Label(root)
+#~ place_label.pimg = tk.PhotoImage(img)
+place_label.pimg = ImageTk.PhotoImage(img)
+place_label.config(image=place_label.pimg)
+place_label.pack()
 
 def draw():
     print("Opening csv")
@@ -34,9 +43,10 @@ def draw():
             x = int(row["x_coordinate"])
             y = int(row["y_coordinate"])
             c = int(row["color"])
-            place_canvas.itemconfig(pixels[(x,y)], fill=colour_lookup[c])
-            if idx % 1000 == 0:
-                root.update()
+            img.putpixel((x,y), colour_lookup[c])
+            if idx % CHEATER == 0:
+                place_label.pimg = ImageTk.PhotoImage(img)
+                place_label.config(image=place_label.pimg) #update GUI
 
 t = threading.Thread(target=draw)
 t.daemon = True
