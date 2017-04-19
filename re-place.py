@@ -9,11 +9,6 @@ from PIL import Image, ImageTk
 HEIGHT, WIDTH = 1001, 1001
 CHEATER = 10000 # update display every n changed pixels. The higher this number the faster the animation
 
-colour_lookup = ["#FFFFFF", "#E4E4E4", "#888888", "#222222", "#FFA7D1",
-                 "#E50000", "#E59500", "#A06A42", "#E5D900", "#94E044",
-                 "#02BE01", "#00E5F0", "#0083C7", "#0000EA", "#E04AFF",
-                 "#820080"]
-
 colour_lookup = [
     (255, 255, 255), (228, 228, 228), (136, 136, 136), (34, 34, 34),
     (255, 167, 209), (229, 0, 0), (229, 149, 0), (160, 106, 66),
@@ -24,11 +19,8 @@ root = tk.Tk()
 root.title("re-place")
 root.geometry("{}x{}".format(WIDTH, HEIGHT))
 
-print('please wait ... making 1 million pixels')
 img = Image.new(mode="RGB", size=(WIDTH, HEIGHT), color=colour_lookup[0])
-
 place_label = tk.Label(root)
-#~ place_label.pimg = tk.PhotoImage(img)
 place_label.pimg = ImageTk.PhotoImage(img)
 place_label.config(image=place_label.pimg)
 place_label.pack()
