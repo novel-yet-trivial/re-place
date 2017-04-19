@@ -9,17 +9,12 @@ from PIL import Image, ImageTk
 HEIGHT, WIDTH = 1001, 1001
 CHEATER = 10000 # update display every n changed pixels. The higher this number the faster the animation
 
-colour_lookup = [
-    (255, 255, 255), (228, 228, 228), (136, 136, 136), (34, 34, 34),
-    (255, 167, 209), (229, 0, 0), (229, 149, 0), (160, 106, 66),
-    (229, 217, 0), (148, 224, 68), (2, 190, 1), (0, 229, 240),
-    (0, 131, 199), (0, 0, 234), (224, 74, 255), (130, 0, 128)]
-
 root = tk.Tk()
 root.title("re-place")
 root.geometry("{}x{}".format(WIDTH, HEIGHT))
 
-img = Image.new(mode="RGB", size=(WIDTH, HEIGHT), color=colour_lookup[0])
+img = Image.new(mode="P", size=(WIDTH, HEIGHT))
+img.putpalette([255, 255, 255, 228, 228, 228, 136, 136, 136, 34, 34, 34, 255, 167, 209, 229, 0, 0, 229, 149, 0, 160, 106, 66, 229, 217, 0, 148, 224, 68, 2, 190, 1, 0, 229, 240, 0, 131, 199, 0, 0, 234, 224, 74, 255, 130, 0, 128])
 place_label = tk.Label(root)
 place_label.pimg = ImageTk.PhotoImage(img)
 place_label.config(image=place_label.pimg)
@@ -35,7 +30,7 @@ def draw():
             x = int(row["x_coordinate"])
             y = int(row["y_coordinate"])
             c = int(row["color"])
-            img.putpixel((x,y), colour_lookup[c])
+            img.putpixel((x,y), c)
             if idx % CHEATER == 0:
                 place_label.pimg = ImageTk.PhotoImage(img)
                 place_label.config(image=place_label.pimg) #update GUI
