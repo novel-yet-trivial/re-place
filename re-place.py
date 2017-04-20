@@ -61,14 +61,15 @@ def draw(i):
 def update(val):
     target_pixel = int(val * 1000000)
     delta = target_pixel - current_pixel
-    if delta == 0:
-        return # nothing to do
 
     if delta > 0:
         to_load = delta
-    elif delta < 0:
+    elif delta < -5: # rounding errors small negative numbers sometimes.
         clear()
         to_load = target_pixel
+    else:
+        return # nothing to do
+
     print('loading {:,} pixels, please wait ... '.format(to_load), end='', flush=True)
     load_data(to_load)
     im.set_array(data)
