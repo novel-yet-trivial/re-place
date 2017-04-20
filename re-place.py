@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 
-print("Loading...")
-import matplotlib.animation as animation
-import matplotlib.pyplot as plt
 import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
+from matplotlib.widgets import Slider, Button, RadioButtons
 
 HEIGHT, WIDTH = 1000, 1000
 STEP = 10000 # update display every n changed pixels
@@ -26,20 +26,49 @@ def from_bytes3(b):
     i = int.from_bytes(b, 'little')
     return i >> 14 & 1023, i >> 4 & 1023, i & 15
 
-def draw(i):
-    for idx in range(STEP):
+def clear():
+    data.fill(1.0) # clear the image
+    fh.seek(0) # restart the file
+
+def load_data(num_pixels):
+    for idx in range(num_pixels):
         pixel = fh.read(3)
-        if not pixel:
-            # file is exhausted. Restart.
-            data.fill(1.0) # clear the image
-            fh.seek(0) # restart the file
-            continue
-        x, y, c = from_bytes3(pixel)
-        data[y][x] = colour_lookup[c]
-    im.set_array(data)
-    return im,
+        if not pixel: # file is exhausted. Restart.
+            clear()
+        else:
+            x, y, c = from_bytes3(pixel)
+            data[y][x] = colour_lookup[c]
 
 fig = plt.figure()
+plt.subplots_adjust(bottom=0.25)
 im = plt.imshow(data, animated=True)
+
+def draw(i):
+    load_data(STEP)
+    im.set_array(data)
+    slide.set_val(fh.tell() / 3000000)
+    return im,
+
+def update(val):
+    target_pixel = int(val * 1000000)
+    current_pixel = int(fh.tell() / 3)
+    delta = target_pixel - current_pixel
+    if delta == 0:
+        return # nothing to do
+
+    if delta > 0:
+        to_load = delta
+    elif delta < 0:
+        clear()
+        to_load = target_pixel
+    print('loading {:,} pixels, please wait ... '.format(to_load), end='', flush=True)
+    load_data(to_load)
+    im.set_array(data)
+    print('done')
+
+ax_slider = plt.axes([0.1, 0.1, 0.8, 0.03]) # [left, bottom, width, height]
+slide = Slider(ax_slider, 'Pixels', 0, 16.5, valinit=0)
+slide.on_changed(update)
+
 ani = animation.FuncAnimation(fig, draw, interval=50, blit=True)
 plt.show()
