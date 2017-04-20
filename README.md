@@ -10,7 +10,7 @@ The data file needed for this program can be found [here](https://mega.nz/#!E0gQ
 , which is from [this post](https://www.reddit.com/r/place/comments/65x14m/place_time_lapse_and_data_from_start_to_finish/)
 . I will upload a backup to this repo when I get the chance
 
-The structure of the data file is `(time_stamp, user_hash, x_coordinate, y_coordinate, color)`
+The structure of the data file is `(time_stamp, x_coordinate, y_coordinate, color)`
 
 ---
 
