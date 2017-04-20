@@ -17,6 +17,7 @@ colour_lookup = [
 
 print("Opening binary file")
 fh = open('pixels.bin', 'rb')
+current_pixel = 0
 print("Making a million pixels")
 data = np.full((WIDTH, HEIGHT, 3), 1.0, dtype=np.float32)
 print("Done, Drawing")
@@ -29,10 +30,14 @@ def from_bytes3(b):
 def clear():
     data.fill(1.0) # clear the image
     fh.seek(0) # restart the file
+    global current_pixel
+    current_pixel = 0
 
 def load_data(num_pixels):
+    global current_pixel
     for idx in range(num_pixels):
         pixel = fh.read(3)
+        current_pixel += 1
         if not pixel: # file is exhausted. Restart.
             clear()
         else:
@@ -43,15 +48,18 @@ fig = plt.figure()
 plt.subplots_adjust(bottom=0.25)
 im = plt.imshow(data, animated=True)
 
+import time
+start = None
+
 def draw(i):
     load_data(STEP)
     im.set_array(data)
-    slide.set_val(fh.tell() / 3000000)
+    pos = current_pixel / 1000000
+    slide.set_val(pos)
     return im,
 
 def update(val):
     target_pixel = int(val * 1000000)
-    current_pixel = int(fh.tell() / 3)
     delta = target_pixel - current_pixel
     if delta == 0:
         return # nothing to do
