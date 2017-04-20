@@ -10,6 +10,8 @@ The binary data file uses 3 bytes (24 bits) per pixel. Each pixel is saved as a 
 
 The data comprises 16,556,641 pixels changes. X and Y are in the range 0 - 999 (inclusive). color is in the range 0 - 15 (inclusive). 3,256 pixels were removed from the original dataset as they were out of range; presumibly due to data sanitation error.
 
+The structure of the data file is `(x_coordinate, y_coordinate, color)`
+
 ---
 
 "1.2 million redditors used these premises to build the largest collaborative
