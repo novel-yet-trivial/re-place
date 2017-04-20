@@ -6,13 +6,14 @@ import matplotlib.animation as animation
 from matplotlib.widgets import Slider, Button, RadioButtons
 
 HEIGHT, WIDTH = 1000, 1000
-CHEATER = 10000 # update display every n changed pixels. The higher this number the faster the animation
+STEP = 10000 # update display every n changed pixels
 
 colour_lookup = [
     (1.00, 1.00, 1.00), (0.89, 0.89, 0.89), (0.53, 0.53, 0.53), (0.13, 0.13, 0.13),
     (1.00, 0.65, 0.82), (0.90, 0.00, 0.00), (0.90, 0.58, 0.00), (0.63, 0.42, 0.26),
     (0.90, 0.85, 0.00), (0.58, 0.88, 0.27), (0.01, 0.75, 0.00), (0.00, 0.90, 0.94),
-    (0.00, 0.51, 0.78), (0.00, 0.00, 0.92), (0.88, 0.29, 1.00), (0.51, 0.00, 0.50)]
+    (0.00, 0.51, 0.78), (0.00, 0.00, 0.92), (0.88, 0.29, 1.00), (0.51, 0.00, 0.50)
+]
 
 print("Opening binary file")
 fh = open('pixels.bin', 'rb')
@@ -43,7 +44,7 @@ plt.subplots_adjust(bottom=0.25)
 im = plt.imshow(data, animated=True)
 
 def draw(i):
-    load_data(CHEATER)
+    load_data(STEP)
     im.set_array(data)
     slide.set_val(fh.tell() / 3000000)
     return im,
