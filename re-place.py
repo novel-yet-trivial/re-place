@@ -48,9 +48,6 @@ fig = plt.figure()
 plt.subplots_adjust(bottom=0.25)
 im = plt.imshow(data, animated=True)
 
-import time
-start = None
-
 def draw(i):
     load_data(STEP)
     im.set_array(data)
