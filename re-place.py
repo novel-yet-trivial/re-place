@@ -1,33 +1,41 @@
+#!/usr/bin/env python3
+
 from csv import DictReader
-from tkinter import *
-import threading
+import lzma
+import numpy as np
+import matplotlib.pyplot as plt
+import matplotlib.animation as animation
 
-h, w = 1001, 1001
+HEIGHT, WIDTH = 1001, 1001
+CHEATER = 10000 # update display every n changed pixels. The higher this number the faster the animation
 
-colour_lookup = ["#FFFFFF", "#E4E4E4", "#888888", "#222222", "#FFA7D1",
-                 "#E50000", "#E59500", "#A06A42", "#E5D900", "#94E044",
-                 "#02BE01", "#00E5F0", "#0083C7", "#0000EA", "#E04AFF",
-                 "#820080"]
+colour_lookup = [
+    (1.00, 1.00, 1.00), (0.89, 0.89, 0.89), (0.53, 0.53, 0.53), (0.13, 0.13, 0.13),
+    (1.00, 0.65, 0.82), (0.90, 0.00, 0.00), (0.90, 0.58, 0.00), (0.63, 0.42, 0.26),
+    (0.90, 0.85, 0.00), (0.58, 0.88, 0.27), (0.01, 0.75, 0.00), (0.00, 0.90, 0.94),
+    (0.00, 0.51, 0.78), (0.00, 0.00, 0.92), (0.88, 0.29, 1.00), (0.51, 0.00, 0.50)]
 
-root = Tk()
-root.title("re-place")
-root.geometry("{}x{}".format(w, h))
-place_canvas = Canvas(root, width=w, height=h, highlightbackground="white")
-place_canvas.grid()
+print("Opening csv")
+csvfile = lzma.open('sorted_pixels.csv.xz', 'rt')
+print("Open, feeding to DictReader")
+reader = DictReader(csvfile)
+print("Making a million pixels")
+data = np.full((WIDTH, HEIGHT, 3), 1.0, dtype=np.float32)
+print("Done, Drawing")
 
-def draw():
-    print("Opening csv")
-    with open ("sorted_pixels.csv") as csvfile:
-        print("Open, feeding to DictReader")
-        reader = DictReader(csvfile)
-        print("Done, Drawing")
-        for row in reader:
-            x = int(row["x_coordinate"])
-            y = int(row["y_coordinate"])
-            c = int(row["color"])
-            place_canvas.create_rectangle(x, y, x+1, y+1, fill=colour_lookup[c],  width=0)
+def draw(i):
+    for idx in range(CHEATER):
+        row = next(reader)
+        x = int(row["x_coordinate"])
+        y = int(row["y_coordinate"])
+        c = int(row["color"])
+        data[y][x] = colour_lookup[c]
+    im.set_array(data)
+    return im,
 
-t = threading.Thread(target=draw)
-t.daemon = True
-t.start()
-root.mainloop()
+fig = plt.figure()
+
+im = plt.imshow(data, animated=True)
+
+ani = animation.FuncAnimation(fig, draw, interval=50, blit=True)
+plt.show()
